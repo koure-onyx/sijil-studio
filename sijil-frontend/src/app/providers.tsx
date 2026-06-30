@@ -1,23 +1,22 @@
-'use client'
+'use client';
 
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { useState } from 'react'
+import React from 'react';
+import { QueryProvider } from '@/components/providers/query-provider';
+import { ThemeProvider } from '@/lib/theme-provider';
 
-export function Providers({ children }: { children: React.ReactNode }) {
-  const [queryClient] = useState(
-    () =>
-      new QueryClient({
-        defaultOptions: {
-          queries: {
-            staleTime: 60 * 1000,
-          },
-        },
-      })
-  )
+interface ProvidersProps {
+  children: React.ReactNode;
+}
 
+/**
+ * Unified Client-Side Providers Layer.
+ */
+export function Providers({ children }: ProvidersProps) {
   return (
-    <QueryClientProvider client={queryClient}>
-      {children}
-    </QueryClientProvider>
-  )
+    <QueryProvider>
+      <ThemeProvider>
+        {children}
+      </ThemeProvider>
+    </QueryProvider>
+  );
 }

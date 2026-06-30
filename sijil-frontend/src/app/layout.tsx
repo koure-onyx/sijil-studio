@@ -1,7 +1,6 @@
 import type { Metadata, Viewport } from 'next';
 import { Inter, Merriweather } from 'next/font/google';
-import { ThemeProvider, themeInitializerScript } from '@/lib/theme-provider';
-import { QueryProvider } from '@/components/providers/query-provider';
+import { Providers } from '@/app/providers';
 import { MainLayout } from '@/components/layout/main-layout';
 import '@/app/globals.css';
 
@@ -52,13 +51,11 @@ export default function RootLayout({
         <script dangerouslySetInnerHTML={{ __html: themeInitializerScript }} />
       </head>
       <body>
-        <QueryProvider>
-          <ThemeProvider>
-            <MainLayout>
-              {children}
-            </MainLayout>
-          </ThemeProvider>
-        </QueryProvider>
+        <Providers>
+          <MainLayout>
+            {children}
+          </MainLayout>
+        </Providers>
       </body>
     </html>
   );
