@@ -1,42 +1,69 @@
 'use client';
 
+import React, { useState } from 'react';
 import Link from 'next/link';
-import { siteConfig } from '@/config/site';
-import { useUIStore } from '@/store/use-ui-store';
-import { MobileMenu } from './mobile-menu';
+import { Menu, Search } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Logo } from '@/components/ui/logo';
+import { ThemeToggle } from '@/components/theme/theme-toggle';
+import { MobileMenu } from '@/components/layout/mobile-menu';
+import { HEADER_NAV_ITEMS } from '@/config/navigation';
 
 export function Header() {
-  const { sidebarOpen, setSidebarOpen } = useUIStore();
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-border bg-background/95 backdrop-blur-md">
-      <div className="container mx-auto flex h-16 items-center justify-between px-4">
-        <Link href="/" className="flex items-center space-x-2 font-bold text-xl tracking-tight text-primary">
-          {siteConfig.name}
+    <header className="sticky top-0 z-40 w-full border-b bg-background/95 backdrop-blur-md transition-colors duration-200">
+      <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
+        {/* Branding Logo Block */}
+        <Link href="/" className="flex items-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-md">
+          <Logo />
         </Link>
-        
-        <nav className="hidden md:flex space-x-6 text-sm font-medium">
-          <Link href="/" className="transition-colors hover:text-primary">
-            Dashboard
-          </Link>
+
+        {/* Desktop View Navigation Links Context */}
+        <nav className="hidden md:flex items-center gap-8">
+          {HEADER_NAV_ITEMS.map((item) => (
+            <Link
+              key={item.href}
+              href={item.href}
+              className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-sm"
+            >
+              {item.label}
+            </Link>
+          ))}
         </nav>
 
-        {/* Mobile Hamburger Toggle Trigger */}
-        <button
-          onClick={() => setSidebarOpen(!sidebarOpen)}
-          className="inline-flex h-9 w-9 items-center justify-center rounded-md border border-border bg-background text-sm font-medium hover:bg-muted md:hidden cursor-pointer"
-          aria-label="Toggle structural menu"
-        >
-          <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            {sidebarOpen ? (
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
-            ) : (
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16" />
-            )}
-          </svg>
-        </button>
+        {/* Global Toolbar Action Controls Wrapper */}
+        <div className="flex items-center gap-2">
+          <Button
+            variant="ghost"
+            size="icon"
+            className="text-foreground"
+            aria-label="Open search model overview interface"
+          >
+            <Search className="h-5 w-5" />
+          </Button>
+
+          <div className="hidden md:block">
+            <ThemeToggle />
+          </div>
+
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            className="md:hidden text-foreground"
+            aria-expanded={mobileMenuOpen}
+            aria-controls="mobile-menu"
+            aria-label="Toggle structural layout responsive drawer navigation view panel"
+          >
+            <Menu className="h-6 w-6" />
+          </Button>
+        </div>
       </div>
-      <MobileMenu />
+
+      {/* Frame Motion Controlled Drawer Layer Context */}
+      <MobileMenu open={mobileMenuOpen} onOpenChange={setMobileMenuOpen} />
     </header>
   );
 }

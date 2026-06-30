@@ -1,15 +1,43 @@
-import './globals.css';
-import { Metadata } from 'next';
-import { siteConfig } from '@/config/site';
+import type { Metadata, Viewport } from 'next';
+import { Inter, Merriweather } from 'next/font/google';
+import { ThemeProvider, themeInitializerScript } from '@/lib/theme-provider';
 import { QueryProvider } from '@/components/providers/query-provider';
 import { MainLayout } from '@/components/layout/main-layout';
+import '@/app/globals.css';
+
+const inter = Inter({
+  subsets: ['latin'],
+  variable: '--font-sans',
+  display: 'swap',
+});
+
+const merriweather = Merriweather({
+  subsets: ['latin'],
+  weight: ['300', '400', '700'],
+  variable: '--font-serif',
+  display: 'swap',
+});
 
 export const metadata: Metadata = {
   title: {
-    default: siteConfig.name,
-    template: `%s | ${siteConfig.name}`,
+    template: '%s | Sijil',
+    default: 'Sijil - Digital Textbook Platform',
   },
-  description: siteConfig.description,
+  description: 'Comprehensive digital textbooks for Pakistani curriculum (PCTB). Access documents, topics, assessments, and more.',
+  keywords: ['textbooks', 'education', 'Pakistan', 'PCTB', 'learning'],
+  authors: [{ name: 'Sijil Team' }],
+  creator: 'Sijil',
+  publisher: 'Sijil',
+  robots: {
+    index: true,
+    follow: true,
+  },
+};
+
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 5,
 };
 
 export default function RootLayout({
@@ -18,12 +46,18 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className="scroll-smooth">
+    <html lang="en" className={`${inter.variable} ${merriweather.variable}`} suppressHydrationWarning>
+      <head>
+        {/* Blocking execution string layout step guarding systemic theme injection layout profiles prior to painting page trees */}
+        <script dangerouslySetInnerHTML={{ __html: themeInitializerScript }} />
+      </head>
       <body>
         <QueryProvider>
-          <MainLayout>
-            {children}
-          </MainLayout>
+          <ThemeProvider>
+            <MainLayout>
+              {children}
+            </MainLayout>
+          </ThemeProvider>
         </QueryProvider>
       </body>
     </html>
