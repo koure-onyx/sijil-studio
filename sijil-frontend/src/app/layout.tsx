@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from 'next';
 import { Inter, Merriweather } from 'next/font/google';
 import { Providers } from '@/app/providers';
 import { MainLayout } from '@/components/layout/main-layout';
+import { themeInitializerScript } from '@/lib/theme-provider';
 import '@/app/globals.css';
 
 const inter = Inter({
