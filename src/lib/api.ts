@@ -7,8 +7,10 @@ import {
   TopicChildrenResponse
 } from '@/types/topic';
 import { Document, DocumentsResponse } from '@/types/document';
+import { SurahData, Ayah } from '@/hooks/use-quran-surah';
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || '/api/v1';
+const QURAN_API_BASE = process.env.NEXT_PUBLIC_QURAN_API_URL || '/api/quran';
 
 export const getTopics = async (filters: {
   collection?: string;
@@ -168,6 +170,53 @@ export const getDocuments = async (filters: {
 
   if (!response.ok) {
     throw new Error(`Failed to fetch documents: ${response.status} ${response.statusText}`);
+  }
+
+  return response.json();
+};
+
+// Quran APIs for Phase 06
+export const getSurah = async (surahNumber: string): Promise<SurahData> => {
+  const response = await fetch(`${QURAN_API_BASE}/surah/${surahNumber}`, {
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
+
+  if (!response.ok) {
+    throw new Error(`Failed to fetch Surah ${surahNumber}: ${response.status} ${response.statusText}`);
+  }
+
+  return response.json();
+};
+
+export const getAyah = async (surahNumber: string, ayahNumber: string) => {
+  const response = await fetch(`${QURAN_API_BASE}/ayah/${surahNumber}/${ayahNumber}`, {
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
+
+  if (!response.ok) {
+    throw new Error(`Failed to fetch Ayah: ${response.status} ${response.statusText}`);
+  }
+
+  return response.json();
+};
+
+export const getAyahRange = async (
+  surahNumber: string,
+  start: string,
+  end: string
+) => {
+  const response = await fetch(`${QURAN_API_BASE}/range/${surahNumber}/${start}/${end}`, {
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
+
+  if (!response.ok) {
+    throw new Error(`Failed to fetch Ayah range: ${response.status} ${response.statusText}`);
   }
 
   return response.json();
