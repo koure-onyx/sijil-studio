@@ -1,4 +1,11 @@
-import { Topic, TopicsResponse, Collection, CollectionsResponse } from '@/types/topic';
+import { 
+  Topic, 
+  TopicsResponse, 
+  Collection, 
+  CollectionsResponse,
+  TopicDocumentsResponse,
+  TopicChildrenResponse
+} from '@/types/topic';
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || '/api/v1';
 
@@ -53,6 +60,36 @@ export const getTopicChildren = async (slug: string): Promise<TopicsResponse> =>
 
   if (!response.ok) {
     throw new Error(`Failed to fetch topic children: ${response.status} ${response.statusText}`);
+  }
+
+  return response.json();
+};
+
+export const getTopicDocuments = async (
+  slug: string,
+  page = 1,
+  pageSize = 20,
+  sortBy?: string,
+  sortOrder?: string
+): Promise<TopicDocumentsResponse> => {
+  const params = new URLSearchParams();
+  params.append('page', page.toString());
+  params.append('pageSize', pageSize.toString());
+  
+  if (sortBy) params.append('sortBy', sortBy);
+  if (sortOrder) params.append('sortOrder', sortOrder);
+
+  const response = await fetch(
+    `${API_BASE_URL}/topics/${slug}/documents?${params.toString()}`,
+    {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    }
+  );
+
+  if (!response.ok) {
+    throw new Error(`Failed to fetch topic documents: ${response.status} ${response.statusText}`);
   }
 
   return response.json();

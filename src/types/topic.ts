@@ -2,7 +2,7 @@ export interface Topic {
   id: string;
   slug: string;
   title: string;
-  description?: string;
+  description?: string | null;
   document_count: number;
   collection: {
     id: string;
@@ -16,8 +16,58 @@ export interface Topic {
     title: string;
   };
   children_count?: number;
+  level: number;
   created_at: string;
   updated_at: string;
+}
+
+export interface TopicDetail extends Topic {
+  parent: {
+    id: string;
+    slug: string;
+    title: string;
+  } | null;
+}
+
+export interface ChildTopic {
+  id: string;
+  slug: string;
+  title: string;
+  description?: string | null;
+  documentCount: number;
+}
+
+export interface DocumentSummary {
+  id: string;
+  slug: string;
+  title: string;
+  excerpt?: string | null;
+  type: 'quranic' | 'hadith' | 'classical' | 'modern';
+  sourceId?: string | null;
+  topicIds: string[];
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface TopicDocumentsResponse {
+  data: {
+    documents: DocumentSummary[];
+    pagination: PaginationInfo;
+  };
+}
+
+export interface TopicChildrenResponse {
+  data: {
+    topics: ChildTopic[];
+    pagination: PaginationInfo;
+  };
+}
+
+export interface PaginationInfo {
+  currentPage: number;
+  pageSize: number;
+  totalItems: number;
+  totalPages: number;
 }
 
 export interface Collection {

@@ -1,16 +1,15 @@
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import { getTopicBySlug, getTopicChildren, getCollections } from '@/lib/api';
-import TopicGrid from '@/components/topics/topic-grid';
-import FilterBar from '@/components/topics/filter-bar';
-import BreadcrumbNav from '@/components/topics/breadcrumb-nav';
-import TopicSkeleton from '@/components/topics/topic-skeleton';
+import { getTopicBySlug, getTopicChildren, getTopicDocuments } from '@/lib/api';
+import { Breadcrumb } from '@/components/navigation/breadcrumb';
+import { TopicHeader } from '@/components/topic-detail/topic-header';
+import { ChildTopicsGrid } from '@/components/topic-detail/child-topics-grid';
+import { TopicDocumentList } from '@/components/topic-detail/document-list';
+import { TopicActions } from '@/components/topic-detail/topic-actions';
 import { Suspense } from 'react';
-import { TopicFilters } from '@/types/topic';
 
 interface PageProps {
   params: { slug: string };
-  searchParams: { collection?: string; search?: string; page?: string };
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
@@ -18,8 +17,14 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     const topic = await getTopicBySlug(params.slug);
     
     return {
-      title: `${topic.title} Topics | Sijil`,
-      description: topic.description || `Browse topics under ${topic.title}`,
+      title: `${topic.title} | Sijil`,
+      description: topic.description || `Explore documents related to ${topic.title}`,
+      openGraph: {
+        title: `${topic.title} | Sijil`,
+        description: topic.description || `Explore documents related to ${topic.title}`,
+        type: 'website',
+        url: `https://sijil.app/topics/${params.slug}`,
+      },
     };
   } catch (error) {
     return {
@@ -29,43 +34,89 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   }
 }
 
-export default async function TopicDetailPage({ params, searchParams }: PageProps) {
-  const filters: TopicFilters = {
-    collection: searchParams.collection,
-    search: searchParams.search,
-    page: parseInt(searchParams.page || '1')
-  };
-
+export default async function TopicDetailPage({ params }: PageProps) {
   try {
-    const [topic, childrenData, collectionsData] = await Promise.all([
+    const [topic, childrenData] = await Promise.all([
       getTopicBySlug(params.slug),
       getTopicChildren(params.slug),
-      getCollections()
     ]);
 
+    // Build breadcrumb hierarchy
     const breadcrumbs = [
       { label: 'Home', href: '/' },
       { label: 'Topics', href: '/topics' },
-      { label: topic.title, href: `/topics/${params.slug}` }
     ];
 
+    // Add parent topic if exists
+    if (topic.parent) {
+      breadcrumbs.push({
+        label: topic.parent.title,
+        href: `/topics/${topic.parent.slug}`,
+      });
+    }
+
+    breadcrumbs.push({
+      label: topic.title,
+      href: `/topics/${params.slug}`,
+    });
+
     return (
-      <div className="container mx-auto px-4 py-8">
-        <BreadcrumbNav breadcrumbs={breadcrumbs} />
+      <div className="container mx-auto px-4 py-8 max-w-7xl">
+        <Breadcrumb items={breadcrumbs} />
         
-        <FilterBar
-          collections={collectionsData.data}
-          selectedCollection={filters.collection}
-          searchQuery={filters.search}
+        <TopicHeader
+          title={topic.title}
+          description={topic.description}
+          level={topic.level}
+          documentCount={topic.document_count}
+          childCount={topic.children_count || 0}
         />
 
-        <Suspense fallback={<TopicSkeleton />}>
-          <TopicGrid 
-            topics={childrenData.data} 
-            currentPage={childrenData.meta.current_page}
-            totalPages={childrenData.meta.total_pages}
+        <TopicActions topicSlug={params.slug} className="mb-8" />
+
+        {/* Child Topics Section */}
+        {childrenData.data && childrenData.data.length > 0 && (
+          <ChildTopicsGrid 
+            topics={childrenData.data.map(child => ({
+              id: child.id,
+              slug: child.slug,
+              title: child.title,
+              description: child.description,
+              documentCount: child.document_count,
+            }))}
           />
+        )}
+
+        {/* Documents Section */}
+        <Suspense fallback={
+          <div className="space-y-4">
+            {[...Array(5)].map((_, i) => (
+              <div 
+                key={i}
+                className="bg-white rounded-lg border border-gray-200 p-4 animate-pulse"
+              >
+                <div className="h-5 bg-gray-200 rounded w-3/4 mb-2"></div>
+                <div className="h-4 bg-gray-200 rounded w-1/2"></div>
+              </div>
+            ))}
+          </div>
+        }>
+          <TopicDocumentList topicSlug={params.slug} />
         </Suspense>
+
+        {/* Structured Data for SEO */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              '@context': 'https://schema.org',
+              '@type': 'Thing',
+              name: topic.title,
+              description: topic.description,
+              url: `https://sijil.app/topics/${topic.slug}`,
+            }),
+          }}
+        />
       </div>
     );
   } catch (error) {
