@@ -2,6 +2,7 @@
 
 import { useQuery } from '@tanstack/react-query';
 import { api } from '@/lib/api/client';
+import { API_ENDPOINTS } from '@/lib/api/endpoints';
 import { Document } from '@/types/homepage';
 
 /**
@@ -11,7 +12,7 @@ export function useRecentDocuments() {
   return useQuery<Document[]>({
     queryKey: ['documents', 'recent'],
     queryFn: async () => {
-      const response = await api.get('/documents/recent');
+      const response = await api.get(API_ENDPOINTS.RECENT_DOCUMENTS);
       return response.data?.results || response.data || [];
     },
     staleTime: 1000 * 60 * 5, // Fresh for 5 minutes
