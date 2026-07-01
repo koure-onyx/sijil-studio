@@ -1,7 +1,8 @@
 import { SubjectCard } from './subject-card';
+import type { Subject } from '@/types/api';
 
 interface CollectionsGridProps {
-  subjects: string[];
+  subjects: Subject[];
 }
 
 export function CollectionsGrid({ subjects }: CollectionsGridProps) {
@@ -21,11 +22,11 @@ export function CollectionsGrid({ subjects }: CollectionsGridProps) {
           </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {subjects.map((subject) => (
+            {subjects.map((subjectData) => (
               <SubjectCard 
-                key={subject} 
-                subject={subject}
-                href={`/subjects/${subject.toLowerCase().replace(/\s+/g, '-')}`}
+                key={subjectData.slug} 
+                subject={subjectData.subject}
+                href={`/subjects/${subjectData.slug}`}
               />
             ))}
           </div>

@@ -51,7 +51,7 @@ export default function RootLayout({
         {/* Blocking execution string layout step guarding systemic theme injection layout profiles prior to painting page trees */}
         <script dangerouslySetInnerHTML={{ __html: themeInitializerScript }} />
       </head>
-      <body>
+      <body suppressHydrationWarning>
         <Providers>
           <MainLayout>
             {children}

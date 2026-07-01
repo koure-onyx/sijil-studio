@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { getSearchSuggestions } from '@/lib/api';
 
 export function useSearchSuggestions(query: string) {
   const [suggestions, setSuggestions] = useState<string[]>([]);
@@ -18,13 +19,7 @@ export function useSearchSuggestions(query: string) {
       setIsLoading(true);
       
       try {
-        const response = await fetch(`/api/v1/search/suggestions?q=${encodeURIComponent(query)}`);
-        
-        if (!response.ok) {
-          throw new Error('Failed to fetch suggestions');
-        }
-
-        const data = await response.json();
+        const data = await getSearchSuggestions(query);
         setSuggestions(data.data || []);
       } catch (error) {
         console.error('Error fetching suggestions:', error);

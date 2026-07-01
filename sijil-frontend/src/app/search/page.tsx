@@ -51,7 +51,7 @@ export default async function SearchPage({ searchParams }: PageProps) {
         {/* Filters Sidebar */}
         <aside className="lg:col-span-1">
           <SearchFilters 
-            filters={availableFilters.data}
+            filters={availableFilters.data as { subjects: string[]; grades: string[]; types: string[] }}
             currentFilters={filters}
           />
         </aside>
@@ -61,15 +61,15 @@ export default async function SearchPage({ searchParams }: PageProps) {
           {query && (
             <>
               <SearchStats 
-                total={resultsData.meta.total}
+                total={resultsData.meta?.total || 0}
                 time={0}
                 query={query}
               />
               <Suspense fallback={<div className="space-y-4">{[...Array(5)].map((_, i) => (<div key={i} className="h-32 bg-gray-100 rounded animate-pulse" />))}</div>}>
                 <SearchResults 
                   results={resultsData.data}
-                  currentPage={resultsData.meta.page}
-                  totalPages={resultsData.meta.total_pages}
+                  currentPage={resultsData.meta?.page || 1}
+                  totalPages={resultsData.meta?.total_pages || 0}
                   query={query}
                 />
               </Suspense>

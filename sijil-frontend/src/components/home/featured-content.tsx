@@ -16,7 +16,7 @@ export function FeaturedContent({ docs }: FeaturedContentProps) {
             <h2 className="text-3xl font-serif font-bold mb-2 text-foreground">Recently Added</h2>
             <p className="text-muted-foreground">Latest content from our education collection</p>
           </div>
-          <Link href="/documents" passHref legacyBehavior>
+          <Link href="/documents">
             <Button variant="ghost" className="group min-h-[44px]">
               View All <span className="ml-1 transition-transform group-hover:translate-x-1">→</span>
             </Button>
@@ -30,8 +30,8 @@ export function FeaturedContent({ docs }: FeaturedContentProps) {
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {docs.slice(0, 6).map((doc) => (
-              <DocumentCard key={doc.id} document={doc} />
+            {docs.slice(0, 6).map((doc, index) => (
+              <DocumentCard key={`${doc.document_id || 'doc'}-${index}`} document={doc} />
             ))}
           </div>
         )}

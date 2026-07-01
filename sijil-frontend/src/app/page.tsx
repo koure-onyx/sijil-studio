@@ -5,6 +5,7 @@ import { CollectionsGrid } from '@/components/home/collections-grid';
 import { FeaturedContent } from '@/components/home/featured-content';
 import { CTASection } from '@/components/home/cta-section';
 import { fetchStats, fetchSubjects, fetchRecentDocuments } from '@/lib/homepage-api';
+import { siteConfig } from '@/config/site';
 
 // Revalidate metrics every hour using standard Next.js Incremental Static Regeneration (ISR)
 export const revalidate = 3600;
@@ -45,10 +46,10 @@ export default async function HomePage() {
     '@type': 'EducationalOrganization',
     name: 'Sijil',
     description: 'Digital textbook platform for Pakistani curriculum',
-    url: 'https://sijil.com',
-    hasCourse: subjects.map((subject) => ({
+    url: siteConfig.url,
+    hasCourse: subjects.map((subjectData) => ({
       '@type': 'Course',
-      name: subject,
+      name: subjectData.subject,
       educationalLevel: 'Grades 9-12',
     })),
   };

@@ -32,7 +32,7 @@ export function SubjectCard({ subject, href }: SubjectCardProps) {
         </p>
       </div>
       <div className="p-6 pt-0 mt-auto">
-        <Link href={href} passHref legacyBehavior>
+        <Link href={href} className="w-full block">
           <Button 
             variant="ghost" 
             className="w-full justify-center group-hover:bg-primary group-hover:text-primary-foreground min-h-[44px]"

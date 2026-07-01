@@ -13,12 +13,12 @@ export function CTASection() {
             Access thousands of educational resources aligned with the Pakistani curriculum. Free for all students and educators.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center pt-4">
-            <Link href="/documents" passHref legacyBehavior>
+            <Link href="/documents">
               <Button size="lg" variant="secondary" className="min-h-[44px] bg-background text-foreground hover:bg-muted">
                 Browse Collection
               </Button>
             </Link>
-            <Link href="/search" passHref legacyBehavior>
+            <Link href="/search">
               <Button 
                 size="lg" 
                 variant="outline" 

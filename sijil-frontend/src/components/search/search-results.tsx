@@ -1,3 +1,5 @@
+'use client';
+
 import { SearchResult } from '@/types/search';
 import { SearchResultCard } from './search-result-card';
 import { PaginationControls } from '../topics/pagination-controls';

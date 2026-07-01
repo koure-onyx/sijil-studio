@@ -24,6 +24,7 @@ export const HEADER_NAV_ITEMS: NavItem[] = [
   { label: 'Documents', href: '/documents' },
   { label: 'Subjects', href: '/subjects' },
   { label: 'Search', href: '/search' },
+  { label: 'Exports', href: '/exports' },
 ];
 
 export const FOOTER_NAV_SECTIONS: FooterSection[] = [
@@ -33,6 +34,7 @@ export const FOOTER_NAV_SECTIONS: FooterSection[] = [
       { label: 'Documents', href: '/documents' },
       { label: 'Subjects', href: '/subjects' },
       { label: 'Search', href: '/search' },
+      { label: 'Exports', href: '/exports' },
     ],
   },
   {

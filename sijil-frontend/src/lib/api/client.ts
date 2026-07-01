@@ -9,8 +9,17 @@ export class APIError extends Error {
   }
 }
 
-export async function apiFetchClient<T>(endpoint: string, options?: RequestInit): Promise<T> {
-  // Gracefully clear duplicate slash issues during route concatenation
+interface BackendResponse<T> {
+  success: boolean;
+  data?: T;
+  error?: string;
+  [key: string]: unknown;
+}
+
+export async function apiFetchClient<T>(
+  endpoint: string,
+  options?: RequestInit
+): Promise<BackendResponse<T>> {
   const normalizedBase = siteConfig.apiBaseUrl.replace(/\/$/, '');
   const normalizedEndpoint = endpoint.startsWith('/') ? endpoint : `/${endpoint}`;
   const targetUrl = `${normalizedBase}${normalizedEndpoint}`;
@@ -38,5 +47,35 @@ export async function apiFetchClient<T>(endpoint: string, options?: RequestInit)
     throw new APIError(message, response.status);
   }
 
-  return response.json() as Promise<T>;
+  return response.json() as Promise<BackendResponse<T>>;
 }
+
+// Create an api object with methods
+export const api = {
+  async get<T>(endpoint: string, options?: RequestInit): Promise<BackendResponse<T>> {
+    return apiFetchClient<T>(endpoint, {
+      method: 'GET',
+      ...options,
+    });
+  },
+  async post<T>(endpoint: string, body?: unknown, options?: RequestInit): Promise<BackendResponse<T>> {
+    return apiFetchClient<T>(endpoint, {
+      method: 'POST',
+      body: body ? JSON.stringify(body) : undefined,
+      ...options,
+    });
+  },
+  async put<T>(endpoint: string, body?: unknown, options?: RequestInit): Promise<BackendResponse<T>> {
+    return apiFetchClient<T>(endpoint, {
+      method: 'PUT',
+      body: body ? JSON.stringify(body) : undefined,
+      ...options,
+    });
+  },
+  async delete<T>(endpoint: string, options?: RequestInit): Promise<BackendResponse<T>> {
+    return apiFetchClient<T>(endpoint, {
+      method: 'DELETE',
+      ...options,
+    });
+  },
+};

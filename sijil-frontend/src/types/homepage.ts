@@ -3,15 +3,14 @@
  */
 
 export interface Document {
-  id: string;
+  document_id: string;
   title: string;
+  document_type: string;
   subject: string;
-  grade: number;
-  type: 'textbook' | 'guide' | 'notes' | 'past_paper';
-  topicCount: number;
-  createdAt: string;
-  updatedAt: string;
-  status: 'published' | 'draft' | 'archived';
+  grade_level: string;
+  slug: string;
+  url_path: string;
+  arrived_at: string;
 }
 
 export interface HomepageStats {

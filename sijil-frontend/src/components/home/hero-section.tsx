@@ -20,10 +20,10 @@ export function HeroSection() {
           </p>
           
           <div className="flex flex-col sm:flex-row gap-4 justify-center pt-4">
-            <Link href="/documents" passHref legacyBehavior>
+            <Link href="/documents">
               <Button size="lg" className="min-h-[44px]">Browse Documents</Button>
             </Link>
-            <Link href="/search" passHref legacyBehavior>
+            <Link href="/search">
               <Button size="lg" variant="outline" className="min-h-[44px]">Search Content</Button>
             </Link>
           </div>

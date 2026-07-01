@@ -8,7 +8,13 @@ export function useApiQuery<T>(
 ) {
   return useQuery<T, Error, T, unknown[]>({
     queryKey,
-    queryFn: () => apiFetchClient<T>(endpoint),
+    queryFn: async () => {
+      const resp = await apiFetchClient<T>(endpoint);
+      if (resp.data !== undefined) {
+        return resp.data;
+      }
+      throw new Error('No data received from API');
+    },
     ...options,
   });
 }

@@ -12,8 +12,8 @@ export function useRecentDocuments() {
   return useQuery<Document[]>({
     queryKey: ['documents', 'recent'],
     queryFn: async () => {
-      const response = await api.get(API_ENDPOINTS.RECENT_DOCUMENTS);
-      return response.data?.results || response.data || [];
+      const response = await api.get<Document[]>(API_ENDPOINTS.RECENT_DOCUMENTS);
+      return Array.isArray(response.data) ? response.data : [];
     },
     staleTime: 1000 * 60 * 5, // Fresh for 5 minutes
   });
